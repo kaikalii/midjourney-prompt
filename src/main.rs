@@ -161,9 +161,18 @@ impl eframe::App for Prompt {
                                 .selected_text("preset")
                                 .width(50.0)
                                 .show_ui(ui, |ui| {
-                                    for [w, h] in
-                                        [[1, 1], [1, 2], [3, 4], [4, 3], [16, 9], [16, 10], [21, 9]]
-                                    {
+                                    for [w, h] in [
+                                        [1, 1],
+                                        [1, 2],
+                                        [1, 3],
+                                        [2, 3],
+                                        [3, 2],
+                                        [3, 4],
+                                        [4, 3],
+                                        [16, 9],
+                                        [16, 10],
+                                        [21, 9],
+                                    ] {
                                         if ui
                                             .selectable_label(
                                                 [self.aspect_w, self.aspect_h] == [w, h],
