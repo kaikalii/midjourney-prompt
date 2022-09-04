@@ -15,6 +15,8 @@ fn main() {
             aspect_w: 1,
             aspect_h: 1,
             stylize: DEFAULT_STYLIZE,
+            use_seed: false,
+            seed: 0,
             video: false,
             copy_on_change: true,
             copied_command: String::new(),
@@ -45,6 +47,8 @@ struct Prompt {
     stylize: u32,
     video: bool,
     copy_on_change: bool,
+    use_seed: bool,
+    seed: u32,
     #[serde(skip)]
     copied_command: String,
 }
@@ -92,6 +96,9 @@ impl Prompt {
         }
         if self.video {
             s.push_str(" --video");
+        }
+        if self.use_seed {
+            write!(&mut s, " --sameseed {}", self.seed);
         }
         if self.algorithm != Algorithm::V3 {
             write!(&mut s, " --{}", self.algorithm.str());
@@ -159,7 +166,7 @@ impl eframe::App for Prompt {
                                 .changed();
                             ComboBox::from_id_source("aspect")
                                 .selected_text("preset")
-                                .width(50.0)
+                                .width(60.0)
                                 .show_ui(ui, |ui| {
                                     for [w, h] in [
                                         [1, 1],
@@ -170,7 +177,6 @@ impl eframe::App for Prompt {
                                         [3, 4],
                                         [4, 3],
                                         [16, 9],
-                                        [16, 10],
                                         [21, 9],
                                     ] {
                                         if ui
@@ -196,6 +202,16 @@ impl eframe::App for Prompt {
                                 .ui(ui);
                             if self.stylize != DEFAULT_STYLIZE && ui.button("reset").clicked() {
                                 self.stylize = DEFAULT_STYLIZE;
+                            }
+                        });
+                        ui.end_row();
+
+                        // Seed
+                        ui.label("seed");
+                        ui.horizontal(|ui| {
+                            ui.checkbox(&mut self.use_seed, "");
+                            if self.use_seed {
+                                DragValue::new(&mut self.seed).ui(ui);
                             }
                         });
                         ui.end_row();
